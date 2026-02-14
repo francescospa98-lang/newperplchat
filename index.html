@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentino - La mia Polpetta ❤️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            overflow: hidden; 
+            height: 100vh; 
+            position: relative; 
+            color: white; 
+            text-align: center; 
+        }
+        /* Carosello sfondo */
+        .carousel { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            overflow: hidden; z-index: -2; 
+        }
+        .carousel img { 
+            position: absolute; width: 100%; height: 100%; object-fit: cover; 
+            opacity: 0; transition: opacity 1s; 
+        }
+        .carousel img.active { opacity: 1; }
+        /* Contenuto centrale */
+        .content { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            z-index: 10; background: rgba(0,0,0,0.5); padding: 40px; border-radius: 20px; 
+            backdrop-filter: blur(10px); 
+        }
+        h1 { font-size: 2.5em; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .buttons { display: flex; gap: 20px; justify-content: center; }
+        button { 
+            padding: 15px 30px; font-size: 1.5em; border: none; border-radius: 50px; 
+            cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+        }
+        button.yes { background: #ff4d4d; color: white; }
+        button.no { background: #ffd700; color: #333; }
+        button:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+        /* Overlay pagine successive */
+        .overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 20; display: none; 
+        }
+        .overlay.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .overlay img { width: 300px; height: 300px; object-fit: contain; margin-bottom: 20px; }
+        /* Canvas cuori */
+        #heartsCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <!-- Carosello foto (sostituisci con le tue foto) -->
+    <div class="carousel">
+        <img src="foto1.jpg" alt="Foto 1" class="active">
+        <img src="foto2.jpg" alt="Foto 2">
+        <img src="foto3.jpg" alt="Foto 3">
+    </div>
+
+    <!-- Canvas cuori animati -->
+    <canvas id="heartsCanvas"></canvas>
+
+    <!-- Pagina 1: Domanda principale -->
+    <div id="page1" class="content">
+        <h1>Vuoi essere per sempre la mia polpetta? ❤️</h1>
+        <div class="buttons">
+            <button class="yes" onclick="goToAmore()">SÌ ❤️</button>
+            <button class="no" onclick="goToSicura()">NO</button>
+        </div>
+    </div>
+
+    <!-- Pagina 2: Sei sicura? -->
+    <div id="page2" class="overlay">
+        <img src="https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif" alt="Gif sorpresa" onerror="this.src='https://via.placeholder.com/300x300/ff69b4/fff?text=Cuori'">
+        <h1>Sei proprio sicura? 😏</h1>
+        <div class="buttons">
+            <button class="yes" onclick="goToAmore()">SÌ ❤️</button>
+            <button class="no" onclick="goToAmore()">NO</button>
+        </div>
+    </div>
+
+    <!-- Pagina 3: TI AMO (finale) -->
+    <div id="page3" class="overlay">
+        <img src="https://media.giphy.com/media/l41lVaMdK8XI5FdlG/giphy.gif" alt="Gif amore" style="width:400px;height:400px;" onerror="this.src='https://via.placeholder.com/400x400/ff1493/fff?text=TI+AMOOO'">
+        <h1>TI AMOOO BIMBA ❤️❤️❤️</h1>
+        <button onclick="location.reload()" style="background:#ff1493;font-size:2em;">Riparti ❤️</button>
+    </div>
+
+    <script>
+        // Carosello automatico (cambia ogni 4s)
+        const images = document.querySelectorAll('.carousel img');
+        let currentImg = 0;
+        setInterval(() => {
+            images[currentImg].classList.remove('active');
+            currentImg = (currentImg + 1) % images.length;
+            images[currentImg].classList.add('active');
+        }, 4000);
+
+        // Cuori animati fluttuanti (particles)
+        const canvas = document.getElementById('heartsCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const hearts = [];
+        for (let i = 0; i < 50; i++) {
+            hearts.push({
+                x: Math.random() * canvas.width,
+                y: canvas.height + 50,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 3 - 1,
+                size: Math.random() * 20 + 10,
+                opacity: Math.random() * 0.5 + 0.3,
+                heart: '❤️'
+            });
+        }
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(heart => {
+                ctx.save();
+                ctx.globalAlpha = heart.opacity;
+                ctx.font = `${heart.size}px Arial`;
+                ctx.fillText(heart.heart, heart.x, heart.y);
+                ctx.restore();
+
+                heart.x += heart.vx;
+                heart.y += heart.vy;
+                heart.vy += 0.05; // gravità inversa per fluttuare su
+                heart.opacity -= 0.005;
+
+                if (heart.y < 0 || heart.opacity <= 0) {
+                    heart.y = canvas.height + 50;
+                    heart.x = Math.random() * canvas.width;
+                    heart.opacity = Math.random() * 0.5 + 0.3;
+                }
+            });
+            requestAnimationFrame(animateHearts);
+        }
+        animateHearts();
+
+        // Funzioni navigazione
+        function goToSicura() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').classList.add('active');
+        }
+        function goToAmore() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').classList.add('active');
+        }
+    </script>
+</body>
+</html>
