@@ -1,162 +1,320 @@
+
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>San Valentino - La mia Polpetta ❤️</title>
+    <title>Per la mia Polpetta 💝</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Arial', sans-serif; 
-            overflow: hidden; 
-            height: 100vh; 
-            position: relative; 
-            color: white; 
-            text-align: center; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        /* Carosello sfondo */
-        .carousel { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            overflow: hidden; z-index: -2; 
+
+        body {
+            font-family: 'Segoe UI', 'Brush Script MT', cursive, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
-        .carousel img { 
-            position: absolute; width: 100%; height: 100%; object-fit: cover; 
-            opacity: 0; transition: opacity 1s; 
+
+        /* SFONDO CAROSELLO + CUORI */
+        .background-carousel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
         }
-        .carousel img.active { opacity: 1; }
-        /* Contenuto centrale */
-        .content { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            z-index: 10; background: rgba(0,0,0,0.5); padding: 40px; border-radius: 20px; 
-            backdrop-filter: blur(10px); 
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
         }
-        h1 { font-size: 2.5em; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .buttons { display: flex; gap: 20px; justify-content: center; }
-        button { 
-            padding: 15px 30px; font-size: 1.5em; border: none; border-radius: 50px; 
-            cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+
+        .carousel-slide.active {
+            opacity: 1;
         }
-        button.yes { background: #ff4d4d; color: white; }
-        button.no { background: #ffd700; color: #333; }
-        button:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
-        /* Overlay pagine successive */
-        .overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 20; display: none; 
+
+        /* CUORI ANIMATI */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
         }
-        .overlay.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .overlay img { width: 300px; height: 300px; object-fit: contain; margin-bottom: 20px; }
-        /* Canvas cuori */
-        #heartsCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 0, 0, 0.6);
+            font-size: 1.5rem;
+            animation: floatHeart 8s linear infinite;
+            user-select: none;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) scale(0.8); opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* LAYOUT PAGINE */
+        .page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(2px);
+            padding: 20px;
+        }
+
+        .page.active-page {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 10px #ff3366, 0 0 20px #ff99cc;
+            margin-bottom: 30px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px 40px;
+            border-radius: 60px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h2 {
+            font-size: 3rem;
+            color: #fff0f5;
+            text-shadow: 2px 2px 8px #c71585;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 30px;
+            border-radius: 40px;
+            margin-bottom: 40px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            font-size: 2.2rem;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 80px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 150px;
+        }
+
+        .btn-yes {
+            background: #ff4d6d;
+            color: white;
+            border: 3px solid #fff;
+        }
+
+        .btn-no {
+            background: #2d4059;
+            color: #f9dcc4;
+            border: 3px solid #ea638c;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 75, 100, 0.6);
+        }
+
+        .btn-no:hover {
+            background: #1e2b3a;
+            color: white;
+        }
+
+        /* PAGINA TI AMO (anche con gif sfondo) */
+        .gif-background {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url('https://media.giphy.com/media/26AHG5K2cxP1P0A0M/giphy.gif?cid=790b7611jf8e6s28dt5jwe5y89a93srhmplzslm9z30k7b31&ep=v1_gifs_search&rid=giphy.gif&ct=g'); 
+            /* ^ GIF romantica bacio / cuori, sostituibile */
+        }
+
+        .gif-background-2 {
+            background-size: cover;
+            background-position: center;
+            background-image: url('https://media.giphy.com/media/l0MYEqE4PKzgQgouI/giphy.gif?cid=790b7611jf8e6s28dt5jwe5y89a93srhmplzslm9z30k7b31&ep=v1_gifs_search&rid=giphy.gif&ct=g');
+            /* GIF con scritte love, alternativa */
+        }
+
+        .ti-amo-page {
+            background-color: rgba(255, 200, 220, 0.3);
+            backdrop-filter: blur(3px);
+        }
+
+        .ti-amo-page h1 {
+            background: rgba(180, 0, 60, 0.6);
+            border: 4px solid gold;
+            color: #ffffe0;
+        }
+
+        /* pagina "sei proprio sicura?" */
+        .sicura-page {
+            background-color: rgba(30, 20, 30, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        /* immagine gif interna per la pagina "sicura" */
+        .gif-inline {
+            max-width: 300px;
+            border-radius: 30px;
+            margin: 30px 0;
+            border: 5px solid white;
+            box-shadow: 0 0 30px hotpink;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2rem; }
+            .btn { font-size: 1.8rem; padding: 12px 30px; }
+        }
     </style>
 </head>
 <body>
-    <!-- Carosello foto (sostituisci con le tue foto) -->
-    <div class="carousel">
-        <img src="foto1.jpg" alt="Foto 1" class="active">
-        <img src="foto2.jpg" alt="Foto 2">
-        <img src="foto3.jpg" alt="Foto 3">
+
+    <!-- CAROSELLO SFONDO (3 foto) -->
+    <div class="background-carousel">
+        <div class="carousel-slide active" id="slide1" style="background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070&auto=format&fit=crop');"></div>
+        <div class="carousel-slide" id="slide2" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b3ce5a1?q=80&w=1964&auto=format&fit=crop');"></div>
+        <div class="carousel-slide" id="slide3" style="background-image: url('https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1974&auto=format&fit=crop');"></div>
     </div>
 
-    <!-- Canvas cuori animati -->
-    <canvas id="heartsCanvas"></canvas>
+    <!-- CUORI GALLEGGIANTI -->
+    <div class="hearts-container" id="heartsContainer"></div>
 
-    <!-- Pagina 1: Domanda principale -->
-    <div id="page1" class="content">
-        <h1>Vuoi essere per sempre la mia polpetta? ❤️</h1>
-        <div class="buttons">
-            <button class="yes" onclick="goToAmore()">SÌ ❤️</button>
-            <button class="no" onclick="goToSicura()">NO</button>
+    <!-- PAGINA 1 - PRINCIPALE -->
+    <div id="page1" class="page active-page">
+        <h1>💖 Vuoi essere per sempre la mia polpetta? 💖</h1>
+        <div class="button-group">
+            <button class="btn btn-yes" onclick="vaiATiAmo()">SÌ</button>
+            <button class="btn btn-no" onclick="vaiAPaginaSicura()">NO</button>
         </div>
     </div>
 
-    <!-- Pagina 2: Sei sicura? -->
-    <div id="page2" class="overlay">
-        <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnUweTM0ZmcweWFydW1iN250MHZ6dGd5Y2dnZDc5bHl6NGhtOTQxayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/X0QKGRNCxnwWs/giphy.gif">
-        <h1>Sei proprio sicura? 😏</h1>
-        <div class="buttons">
-            <button class="yes" onclick="goToAmore()">SÌ ❤️</button>
-            <button class="no" onclick="goToAmore()">NO</button>
+    <!-- PAGINA 2 - "Sei proprio sicura?" -->
+    <div id="pageSicura" class="page sicura-page">
+        <h2>😢 sei proprio sicura? 😢</h2>
+        <!-- GIF integrata -->
+        <img class="gif-inline" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3UzN2xueWtlNWF4cTdpcWJ1aHR4enEwc3l5MTN6M3JzeDVhbzVsNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26u4nJPf0Jt5wR2fm/giphy.gif" alt="triste?">
+        <div class="button-group">
+            <button class="btn btn-yes" onclick="vaiATiAmo()">SÌ 💕</button>
+            <button class="btn btn-no" onclick="vaiATiAmoFinale()">NO</button>
         </div>
     </div>
 
-    <!-- Pagina 3: TI AMO (finale) -->
-    <div id="page3" class="overlay">
-        <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTR2djFyanF2ZTJnNnYwMDBsMTdwd2hqM2p5aWd4MXp5ZmN2MG5veCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/11sBLVxNs7v6WA/giphy.gif">
-        <h1>TI AMOOO BIMBA ❤️❤️❤️</h1>
-        <button onclick="location.reload()" style="background:#ff1493;font-size:2em;">Riparti ❤️</button>
+    <!-- PAGINA 3 - TI AMOOO BIMBA (con gif sfondo) -->
+    <div id="pageTiAmo" class="page gif-background ti-amo-page">
+        <h1>❤️ TI AMOOO BIMBA ❤️</h1>
+        <!-- la gif è nello sfondo della pagina, ma aggiungo anche una gif piccola come abbellimento -->
+        <img src="https://media.giphy.com/media/LoQ/dkUfHJH7Z9iG8/giphy.gif?cid=790b7611jf8e6s28dt5jwe5y89a93srhmplzslm9z30k7b31&ep=v1_gifs_search&rid=giphy.gif&ct=g" style="max-width:200px; border-radius:50%; border:5px solid pink; margin-top:30px;" alt="cuore">
+    </div>
+
+    <!-- PAGINA EXTRA se clicca NO nella seconda (stessa di TI AMO ma con sfondo diverso) -->
+    <div id="pageTiAmoFinale" class="page gif-background-2 ti-amo-page">
+         <h1>💞 TI AMOOO BIMBA 💞</h1>
+         <img src="https://media.giphy.com/media/xT0xeuOy2Fcl9vDGiA/giphy.gif?cid=790b7611jf8e6s28dt5jwe5y89a93srhmplzslm9z30k7b31&ep=v1_gifs_search&rid=giphy.gif&ct=g" style="max-width:220px; border-radius:30px; margin-top:30px;" alt="orsetto love">
     </div>
 
     <script>
-        // Carosello automatico (cambia ogni 4s)
-        const images = document.querySelectorAll('.carousel img');
-        let currentImg = 0;
-        setInterval(() => {
-            images[currentImg].classList.remove('active');
-            currentImg = (currentImg + 1) % images.length;
-            images[currentImg].classList.add('active');
-        }, 4000);
+        // FUNZIONE PER GENERARE CUORI
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heartCount = 40;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 4) + 's'; // 4-9 sec
+                heart.style.fontSize = (Math.random() * 30 + 15) + 'px';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
 
-        // Cuori animati fluttuanti (particles)
-        const canvas = document.getElementById('heartsCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        // CAROSELLO automatico
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(nextSlide, 4000); // cambio ogni 4 secondi
 
-        const hearts = [];
-        for (let i = 0; i < 50; i++) {
-            hearts.push({
-                x: Math.random() * canvas.width,
-                y: canvas.height + 50,
-                vx: (Math.random() - 0.5) * 2,
-                vy: -Math.random() * 3 - 1,
-                size: Math.random() * 20 + 10,
-                opacity: Math.random() * 0.5 + 0.3,
-                heart: '❤️'
-            });
+        // FUNZIONI DI NAVIGAZIONE PAGINE
+        function vaiATiAmo() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('pageTiAmo').classList.add('active-page');
         }
 
-        function animateHearts() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            hearts.forEach(heart => {
-                ctx.save();
-                ctx.globalAlpha = heart.opacity;
-                ctx.font = `${heart.size}px Arial`;
-                ctx.fillText(heart.heart, heart.x, heart.y);
-                ctx.restore();
-
-                heart.x += heart.vx;
-                heart.y += heart.vy;
-                heart.vy += 0.05; // gravità inversa per fluttuare su
-                heart.opacity -= 0.005;
-
-                if (heart.y < 0 || heart.opacity <= 0) {
-                    heart.y = canvas.height + 50;
-                    heart.x = Math.random() * canvas.width;
-                    heart.opacity = Math.random() * 0.5 + 0.3;
-                }
-            });
-            requestAnimationFrame(animateHearts);
+        function vaiAPaginaSicura() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('pageSicura').classList.add('active-page');
         }
-        animateHearts();
 
-        // Funzioni navigazione
-        function goToSicura() {
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').classList.add('active');
+        function vaiATiAmoFinale() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('pageTiAmoFinale').classList.add('active-page');
         }
-        function goToAmore() {
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page3').classList.add('active');
-        }
+
+        // Opzionale: se vuoi che dalla pagina "ti amo" non si possa tornare indietro con i bottoni, ma è ok così.
+        // Gestione anche se qualcuno preme Sì nella pagina sicura (porta a ti amo normale)
+        // già associato nel HTML
+
+        // Se il NO nella prima pagina porta alla pagina sicura; il NO nella seconda porta a TI AMO (finale)
+        // Se SI nella seconda porta a TI AMO normale
+        // Tutto come da specifica.
+
+        // Piccola nota: le immagini Unsplash sono solo placeholder. Puoi sostituire gli URL con le tue 3 foto preferite.
+        // Per le GIF ho usato link da GIPHY (creative commons), sostituiscili con quelli che preferisci.
     </script>
+
+    <!-- ISTRUZIONI PER SOSTITUIRE FOTO E GIF (invisible) -->
+    <!-- 
+        PER CAMBIARE LE 3 FOTO: modifica gli style di #slide1, #slide2, #slide3 con i tuoi URL.
+        Esempio: 
+        <div class="carousel-slide" id="slide1" style="background-image: url('URL_DELLA_TUA_FOTO1');"></div>
+
+        PER CAMBIARE LE GIF:
+        - GIF pagina "sicura": modifica src dell'img con classe gif-inline
+        - GIF sfondo "Ti amo 1": modifica background-image di .gif-background
+        - GIF sfondo "Ti amo 2": modifica background-image di .gif-background-2
+        - GIF extra nelle pagine ti amo: modifica src degli img dentro le pagine
+    -->
 </body>
 </html>
-
-
